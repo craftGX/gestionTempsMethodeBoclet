@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<!-- Définit le type de document comme HTML5 -->
+<html lang="fr">
+  <!-- Indique que la langue principale du document est le français -->
+  <head>
+    <meta charset="UTF-8" />
+    <!-- Définit l'encodage des caractères en UTF-8 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Rend la page responsive -->
+    <title>Gestion du Temps - Méthode Boclet</title>
+    <!-- Titre de la page -->
+    <style>
+      :root {
+        /* Déclaration de variables CSS globales */
+        --blue-fluo: #00bfff; /* Couleur bleu fluo */
+        --green-fluo: #39ff14; /* Couleur vert fluo */
+        --gray: #2f2f2f; /* Gris foncé principal */
+        --bg: #1c1c1c; /* Couleur de fond générale */
+        --text: #f0f0f0; /* Couleur du texte principale */
+        --radius: 12px; /* Rayon d’arrondi pour les éléments */
+      }
+
+      body {
+        /* Styles du corps de la page */
+        font-family: "Poppins", sans-serif; /* Police moderne */
+        background-color: var(--bg); /* Fond gris foncé */
+        color: var(--text); /* Texte clair */
+        margin: 0; /* Supprime les marges par défaut */
+        padding: 2rem 1rem; /* Espace intérieur */
+        display: flex; /* Active le mode flexbox */
+        flex-direction: column; /* Disposition verticale */
+        align-items: center; /* Centre les éléments horizontalement */
+      }
+
+      h2 {
+        /* Titre principal */
+        color: var(--green-fluo); /* Couleur vert fluo */
+        text-shadow: 0 0 8px var(--green-fluo); /* Effet lumineux vert */
+        text-align: center; /* Centrage du texte */
+        margin-bottom: 1.5rem; /* Espace en dessous */
+      }
+
+      .container {
+        /* Conteneur principal des catégories */
+        background: var(--gray); /* Fond gris */
+        padding: 1.5rem; /* Espacement interne */
+        border-radius: var(--radius); /* Coins arrondis */
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.2); /* Légère ombre bleutée */
+        max-width: 600px; /* Largeur max */
+        width: 100%; /* Prend toute la largeur disponible */
+      }
+
+      .category {
+        /* Chaque bloc de catégorie */
+        display: flex; /* Mode flexbox */
+        justify-content: space-between; /* Espace entre les éléments */
+        align-items: center; /* Aligne verticalement au centre */
+        padding: 0.75rem; /* Espacement interne */
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Ligne de séparation */
+        flex-wrap: wrap; /* Permet le retour à la ligne si petit écran */
+      }
+
+      .category:last-child {
+        border-bottom: none;
+      } /* Supprime la bordure du dernier élément */
+
+      .category span {
+        /* Label de la catégorie */
+        flex: 1 1 100%; /* Prend toute la largeur sur petits écrans */
+        font-weight: 600; /* Texte en gras */
+        color: var(--green-fluo); /* Couleur verte */
+        margin-bottom: 0.5rem; /* Espacement inférieur */
+      }
+
+      .buttons {
+        display: flex;
+        gap: 0.5rem;
+      } /* Boutons alignés avec un espace */
+
+      button {
+        /* Styles généraux des boutons */
+        padding: 0.5rem 1rem; /* Taille du bouton */
+        border: none; /* Pas de bordure */
+        border-radius: var(--radius); /* Coins arrondis */
+        cursor: pointer; /* Curseur pointeur */
+        font-weight: 600; /* Texte en gras */
+        transition: all 0.2s; /* Animation fluide au survol */
+        color: var(--bg); /* Texte foncé */
+      }
+
+      button.start {
+        background: var(--green-fluo);
+      } /* Bouton Démarrer en vert fluo */
+      button.stop {
+        background: var(--blue-fluo);
+      } /* Bouton Arrêter en bleu fluo */
+
+      button:hover {
+        /* Effet au survol */
+        transform: scale(1.05); /* Léger agrandissement */
+        filter: brightness(1.2); /* Légère brillance */
+      }
+
+      .time {
+        /* Affichage du chronomètre */
+        font-family: monospace; /* Police à espacement fixe */
+        font-size: 1.1rem; /* Taille du texte */
+        color: var(--blue-fluo); /* Couleur bleue */
+        margin-left: auto; /* Décalage à droite */
+      }
+
+      .stats {
+        /* Bloc des statistiques */
+        margin-top: 2rem; /* Espace au-dessus */
+        background: var(--gray); /* Fond gris */
+        padding: 1.5rem; /* Espacement interne */
+        border-radius: var(--radius); /* Coins arrondis */
+        box-shadow: 0 0 10px rgba(0, 255, 255, 0.15); /* Légère ombre */
+        width: 100%; /* Largeur complète */
+      }
+
+      .stats h3 {
+        /* Titre des stats */
+        margin-top: 0; /* Supprime la marge supérieure */
+        color: var(--green-fluo); /* Vert fluo */
+        text-align: center; /* Centré */
+      }
+
+      .stats div {
+        margin: 0.4rem 0;
+      } /* Espace entre lignes des stats */
+
+      .recap-button {
+        /* Bouton de récapitulatif */
+        margin-top: 1rem; /* Espace au-dessus */
+        background: var(--blue-fluo); /* Bleu fluo */
+        color: var(--bg); /* Texte foncé */
+        font-size: 1rem; /* Taille de texte */
+        padding: 0.6rem 1.2rem; /* Taille du bouton */
+        border-radius: var(--radius); /* Coins arrondis */
+        cursor: pointer; /* Curseur pointeur */
+        transition: 0.3s; /* Animation fluide */
+        font-weight: 600; /* Texte en gras */
+      }
+
+      .recap-button:hover {
+        /* Effet au survol */
+        background: var(--green-fluo); /* Passe au vert fluo */
+        transform: scale(1.05); /* Légère mise en avant */
+      }
+
+      @media (max-width: 500px) {
+        /* Adaptation mobile */
+        .category {
+          flex-direction: column;
+          align-items: flex-start;
+        } /* Empile les éléments */
+        .buttons {
+          width: 100%;
+          justify-content: flex-start;
+        } /* Aligne à gauche */
+        .time {
+          margin-left: 0;
+          margin-top: 0.5rem;
+        } /* Ajuste la position du temps */
+      }
+    </style>
+  </head>
+
+  <body>
+    <h2>Gestion du Temps - Méthode Boclet</h2>
+    <!-- Titre principal -->
+
+    <div class="container" id="categories"></div>
+    <!-- Conteneur où seront affichées les catégories -->
+
+    <button class="recap-button" onclick="showStats()">📅 Voir le récapitulatif du jour</button>
+    <!-- Bouton pour afficher les stats -->
+
+    <div class="stats" id="stats"></div>
+    <!-- Conteneur des statistiques -->
+
+    <script>
+      const categories = [
+        // Liste des types de temps suivis
+        { id: "pro", label: "Temps professionnel" },
+        { id: "perso", label: "Temps personnel" },
+        { id: "soi", label: "Temps pour soi (apprentissage...)" },
+        { id: "oblig", label: "Temps obligatoire (tâches...)" },
+        { id: "perdu", label: "Temps perdu" },
+      ];
+
+      const today = new Date().toISOString().split("T")[0]; // Récupère la date du jour au format AAAA-MM-JJ
+      const STORAGE_KEY = "gestion_temps_boclet"; // Nom de la clé utilisée dans le localStorage
+
+      let allData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; // Récupère les données existantes du localStorage
+      if (!allData[today]) allData[today] = {}; // Si aucune donnée pour aujourd’hui, crée une entrée
+
+      let timers = allData[today]; // Charge les timers du jour actuel
+      categories.forEach((cat) => {
+        // S’assure que chaque catégorie existe
+        if (!timers[cat.id]) timers[cat.id] = { start: null, total: 0 }; // Initialise le chrono si manquant
+      });
+
+      let running = null; // Contient l’ID du chrono en cours
+
+      function saveData() {
+        // Sauvegarde les données dans le localStorage
+        allData[today] = timers; // Met à jour la date du jour
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(allData)); // Enregistre le tout en JSON
+      }
+
+      function formatTime(sec) {
+        // Convertit les secondes en format HH:MM:SS
+        const h = Math.floor(sec / 3600); // Heures
+        const m = Math.floor((sec % 3600) / 60); // Minutes
+        const s = sec % 60; // Secondes
+        return `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}:${s
+          .toString()
+          .padStart(2, "0")}`; // Retourne le texte formaté
+      }
+
+      function renderCategories() {
+        // Crée dynamiquement l’affichage des catégories
+        let html = ""; // Chaîne HTML vide
+        categories.forEach((cat) => {
+          // Pour chaque catégorie...
+          html += `
+          <div class="category">
+            <span>${cat.label}</span>
+            <div class="buttons">
+              <button class="start" onclick="startTimer('${cat.id}')">▶ Démarrer</button>
+              <button class="stop" onclick="stopTimer('${cat.id}')">⏹ Arrêter</button>
+            </div>
+            <div class="time" id="time-${cat.id}">
+              ${formatTime(timers[cat.id]?.total || 0)}
+            </div>
+          </div>`; // Crée un bloc HTML complet
+        });
+        document.getElementById("categories").innerHTML = html; // Injecte le HTML dans la page
+      }
+
+      function startTimer(cat) {
+        // Lance le chronomètre d’une catégorie
+        if (running) stopTimer(running); // Stoppe celui déjà en cours s’il y en a un
+        timers[cat].start = Date.now(); // Enregistre le moment de départ
+        running = cat; // Mémorise la catégorie active
+        saveData(); // Sauvegarde
+      }
+
+      function stopTimer(cat) {
+        // Arrête le chronomètre d’une catégorie
+        if (timers[cat].start) {
+          // Vérifie qu’un chrono est actif
+          const elapsed = Math.floor((Date.now() - timers[cat].start) / 1000); // Calcule le temps écoulé
+          timers[cat].total += elapsed; // Ajoute le temps écoulé au total
+          timers[cat].start = null; // Réinitialise le démarrage
+          running = null; // Aucune catégorie en cours
+          saveData(); // Sauvegarde
+        }
+      }
+
+      function updateDisplay() {
+        // Rafraîchit l’affichage des temps
+        categories.forEach((cat) => {
+          // Pour chaque catégorie...
+          let t = timers[cat.id].total; // Temps total
+          if (timers[cat.id].start) {
+            // Si le chrono tourne encore
+            t += Math.floor((Date.now() - timers[cat.id].start) / 1000); // Ajoute le temps en cours
+          }
+          document.getElementById("time-" + cat.id).textContent = formatTime(t); // Met à jour l’affichage
+        });
+      }
+
+      setInterval(updateDisplay, 1000); // Rafraîchit chaque seconde
+
+      function showStats() {
+        // Affiche le récapitulatif du jour
+        if (running) stopTimer(running); // Stoppe le chrono actif
+        let total = categories.reduce(
+          // Calcule le total de tous les temps
+          (acc, cat) => acc + (timers[cat.id]?.total || 0),
+          0
+        );
+
+        let html = `<h3>Récapitulatif du ${new Date().toLocaleDateString("fr-FR")}</h3>`; // Ajoute la date du jour
+        categories.forEach((cat) => {
+          // Pour chaque catégorie...
+          const sec = timers[cat.id]?.total || 0; // Temps total en secondes
+          const pct = total ? Math.round((sec * 100) / total) : 0; // Pourcentage du total
+          html += `<div>${cat.label} : <b>${formatTime(sec)}</b> (${pct}%)</div>`; // Ligne de récapitulatif
+        });
+
+        document.getElementById("stats").innerHTML = html; // Affiche les résultats dans la div
+      }
+
+      renderCategories(); // Génère les boutons au chargement
+      updateDisplay(); // Met à jour les temps affichés immédiatement
+    </script>
+  </body>
+</html>
